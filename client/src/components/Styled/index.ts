@@ -4,7 +4,7 @@ import { Container, Row, Col, Button, Navbar, Form } from "react-bootstrap"
 
 const colors = {
   light: "#f8f9fa",
-  dark: "#343a40",
+  dark: "#141414",
   red: "#ff0f1a",
   grey: "#333",
 }
@@ -78,6 +78,7 @@ export const LoginContainer = styled.div`
   justify-content: center;
   align-items: center;
   position: absolute;
+  min-height: 100vh;
 `
 
 export const LoginInner = styled.div`
@@ -148,7 +149,7 @@ export const AddBookRow = styled(Row)`
 `
 
 export const AddBookContainer = styled(Container)`
-  margin: 3rem 0;
+  margin: 2rem 0;
 `
 
 export const BookItemsTitle = styled.h3``
@@ -180,4 +181,17 @@ export const CenterCol = styled(Col)`
   display: flex;
   justify-content: center;
   align-items: center;
+`
+
+export const SearchBookButton = styled(Button)`
+  padding: 10px 30px !important;
+  background: ${colors.dark}!important;
+  color: ${colors.red}!important;
+  border: 1px solid ${colors.red} !important;
+
+  &:hover {
+    background: ${colors.red} !important;
+    color: ${colors.light} !important;
+    border: 1px solid ${colors.light} !important;
+  }
 `
