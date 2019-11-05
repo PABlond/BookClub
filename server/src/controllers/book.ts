@@ -6,8 +6,10 @@ import User from "./../models/user"
 const auth = new Auth()
 
 export default class Books {
+  googleBookApi = "https://www.googleapis.com/books/v1/volumes"
+
   getBooks = async ({ q }: { q: string }) => {
-    const url = `https://www.googleapis.com/books/v1/volumes?q=${q}`
+    const url = `${this.googleBookApi}?q=${q}`
     const {
       data: { items }
     } = await axios.get(url)
@@ -20,18 +22,37 @@ export default class Books {
     const user = await auth.getUser(username)
     if (!!!user) return [404, "User does not exists"]
 
-    const url = `https://www.googleapis.com/books/v1/volumes/${id}`
-
-    const { err } = await this.getBookDetails({ id })
+    const { data, err } = await this.getBookDetails({ id })
     if (err) {
-      console.log('ERROR', err)
       return [err.response.status, err.response.statusText]
     }
-
+    const {
+      volumeInfo: {
+        imageLinks: { smallThumbnail, thumbnail } = {
+          smallThumbnail: undefined,
+          thumbnail: undefined
+        }
+      }
+    } = data
     return [
       201,
-      await new Book({ id, owner: user._id }).save().catch(err => err)
+      await new Book({
+        id,
+        owner: user._id,
+        photos: { smallThumbnail, thumbnail }
+      })
+        .save()
+        .catch(err => err)
     ]
+  }
+
+  deleteBook = async ({ username, id }: { username: string; id: string }) => {
+    const user = await auth.getUser(username)
+    if (!!!user) return [404, "User does not exists"]
+    const book = await Book.findOne({id})
+    if (!!!book) return [404, 'Book is not found']
+    await Book.remove({id})
+    return [201, 'OK']
   }
 
   getUserLib = async ({ username }: { username: string }) => {
