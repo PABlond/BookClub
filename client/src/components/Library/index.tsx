@@ -3,7 +3,13 @@ import { connect } from "react-redux"
 import { ILibBook } from "../../interfaces/books.interface"
 import getUserLib from "../../actions/library/getUserLib"
 import getLibDetails from "../../services/queries/getLibDetails"
-// import BookItems from "../BookItems"
+
+import Loading from "../Loading"
+import BookItems from "../BookItems"
+import { OverlayTrigger } from "react-bootstrap"
+import BookDesc from "../BookDesc"
+import { AddLibButton } from "../Styled"
+import { FaTrashAlt } from "react-icons/fa"
 
 const Library = ({
   library,
@@ -14,38 +20,59 @@ const Library = ({
 }) => {
   const [loading, setLoading] = useState<Boolean>(true)
   const [books, setBooks] = useState<any[]>([])
-  // const [selectI, setSelectI] = useState<number>(0)
+  const [overI, setOverI] = useState<number>(0)
+  const [selectI, setSelectI] = useState<number>(0)
+  const [show, setShow] = useState<Boolean>(true)
 
   const fetchDetails = async () => {
-    console.log('he', await getLibDetails())
     setBooks(await getLibDetails())
     setLoading(false)
   }
+
+  const BookItemsOpts = {
+    books,
+    setSelectI,
+    overI,
+    setOverI,
+    title: "Your library",
+  }
+  const BookDescOpts = { book: books[selectI], show, setShow }
+
+  const placement = "right-end"
 
   useEffect(() => {
     getLib()
   }, [])
 
   useEffect(() => {
-    // if (library.length && Object.keys(library[0]).length && loading) {
-    console.log("fetch")
-    fetchDetails()
-    // }
-  }, [library, loading])
-
-  console.log(library)
-
-  // const BookItemsOpts = { books, setSelectI, selectI }
+    if (library.length && !Object.keys(library[0]).length && loading) {
+      fetchDetails()
+    }
+  }, [books, library, loading])
 
   return (
     <>
       {books.length ? (
-        // <BookItems {...BookItemsOpts} />
-        <p>zqdqzd</p>
+        <OverlayTrigger
+          trigger="click"
+          key={placement}
+          rootCloseEvent={"mousedown"}
+          rootClose={true}
+          placement={placement}
+          overlay={
+            <BookDesc {...BookDescOpts}>
+              <AddLibButton onClick={() => console.log(books[selectI].id)}>
+                <FaTrashAlt size={"19px"} /> Delete
+              </AddLibButton>
+            </BookDesc>
+          }
+        >
+          <BookItems {...BookItemsOpts} />
+        </OverlayTrigger>
       ) : !loading ? (
         <p>No book in you library yet</p>
       ) : (
-        <p>Loading ...</p>
+        <Loading />
       )}
     </>
   )
@@ -58,7 +85,6 @@ const mapDispatchToProps = (dispatch: Dispatch<any>) => {
 }
 
 const mapStateToProps = (state: any) => {
-  // console.log(state)
   const { library } = state
   return { library }
 }
