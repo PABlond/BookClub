@@ -64,6 +64,23 @@ describe("Test the api /api/user/book", () => {
       .set("Authorization", bearer)
     expect(response.status).toBe(201)
   })
+
+  test("It should response the DELETE method", async () => {
+    const password = "test"
+    const id = "F3VOAQAACAAJ"
+    const username = "test"
+    await new User({ username }).save()
+    const bearer = `Bearer ${auth.getToken({ username })}`
+    await request(app)
+      .put("/api/user/book")
+      .set("Authorization", bearer)
+      .send({ username, id })
+    const response = await request(app)
+      .delete("/api/user/book")
+      .set("Authorization", bearer)
+      .send({id})
+    expect(response.status).toBe(201)
+  })
 })
 
 describe("Test the /api/user/book/details path", () => {
