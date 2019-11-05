@@ -9,13 +9,19 @@ body {
   font-family: "Roboto", sans-serif;
   background-color: #141414 !important;
   color: #f8f9fa !important;
+  min-height: 100vh;
+
   h1 {
     margin-block-start: 0;
     margin-block-end: 0;
   }
   .slick-list {
-    height: 400px !important;
+    height: 300px !important;
     transition: 1s;
+
+    .slick-slide {
+      height: 200px !important;
+    }
 
     .caroussel-item {
       display: flex !important;
@@ -48,10 +54,15 @@ body {
   }
 
   .hide {
-    display: none;
+    overflow: hidden;
+    transition: transform 0.2s ease-out;
+    height: auto;
+    transform-origin: bottom;
+    transform: scaleY(0);
   }
 
   .popover {
+    position: sticky;
     min-width: 100%;
     bottom: 0;
     top: auto;
