@@ -71,7 +71,7 @@ export default class Books {
   }
 
   getBookDetails = async ({ id }: { id: string }) => {
-    const url = `https://www.googleapis.com/books/v1/volumes/${id}?key=AIzaSyCzD4rgW7XgxxhSGD77QKLgwaztdIMVJ6Q`
+    const url = `https://www.googleapis.com/books/v1/volumes/${id}`
 
     const { data, err, status } = (await axios
       .get(url)
