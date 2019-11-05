@@ -4,6 +4,10 @@ export default mongoose.model(
   "book",
   new mongoose.Schema({
     id: String,
-    owner: String
+    owner: String,
+    photos: {
+      smallThumbnail: String,
+      thumbnail: String
+    }
   })
 )
