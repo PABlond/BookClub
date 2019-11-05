@@ -1,6 +1,8 @@
 import express from "express"
 import controllers from "./../controllers/"
 import passport from "passport"
+import tradeRoutes from "./trade"
+
 const { Auth, Books } = controllers
 
 const Router = express.Router()
@@ -55,8 +57,16 @@ Router.route("/user/book/details").get(
   }
 )
 
-Router.route("/books").get(async (req, res) => {
+Router.route("/user/books").get(async (req, res) => {
   return res.status(201).json(await book.getBooks(req.query))
 })
+
+Router.route("/books").get(async (req, res) => {
+  const [code, response] = await book.find()
+
+  return res.status(code as number).json(response)
+})
+
+Router.use("/trade", tradeRoutes)
 
 export default Router
