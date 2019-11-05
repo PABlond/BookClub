@@ -78,7 +78,7 @@ describe("Test the api /api/user/book", () => {
     const response = await request(app)
       .delete("/api/user/book")
       .set("Authorization", bearer)
-      .send({id})
+      .send({ id })
     expect(response.status).toBe(201)
   })
 })
@@ -88,8 +88,28 @@ describe("Test the /api/user/book/details path", () => {
     const username = "test"
     await new User({ username }).save()
     const bearer = `Bearer ${auth.getToken({ username })}`
-    const response = await request(app).get("/api/user/book/details")
-    .set("Authorization", bearer)
+    const response = await request(app)
+      .get("/api/user/book/details")
+      .set("Authorization", bearer)
+    expect(response.status).toBe(201)
+  })
+})
+
+describe("Test the /api/books path", () => {
+  test("It should response the GET method", async () => {
+    const response = await request(app).get("/api/books")
+    expect(response.status).toBe(201)
+  })
+})
+
+describe("Test the /api/trade path", () => {
+  test("It should response the GET method", async () => {
+    const id = "csQfVW3fnAwC"
+    const owner = "5dbe930138d2fe16103cb05f"
+    const response = await request(app)
+      .get("/api/trade")
+      .query({ id, owner })
+    console.log(response.status)
     expect(response.status).toBe(201)
   })
 })
