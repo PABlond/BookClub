@@ -106,7 +106,7 @@ describe("Get library details", () => {
   })
 
   test("should return an organized array if user is found", async (done: any) => {
-    const id = "F3VOAQAACAAJ"
+    const id = "ox9BiuVKM1cC"
     const username = "BookTest"
     await book.addBookToLib({ username, id })
     const [_, response] = await book.getLibDetails({ username })
@@ -121,6 +121,51 @@ describe("Get library details", () => {
           bookArr.indexOf("imageLinks") !== -1
         )
       })
+    ).toBe(true)
+    done()
+  })
+})
+
+describe("Delete book in library", () => {
+  test("should return 404 if user is not found", async (done: any) => {
+    const username = "WrongUsername"
+    const id = "ox9BiuVKM1cC"
+    await book.addBookToLib({ username, id })
+    const [code, response] = await book.deleteBook({ username, id })
+    expect(code).toBe(404)
+    expect(response).toBe("User does not exists")
+    done()
+  })
+
+  test("should return 404 if id is not found in the user library", async (done: any) => {
+    const username = "BookTest"
+    const id = "WrongId"
+    const [code, response] = await book.deleteBook({ username, id })
+    expect(code).toBe(404)
+    expect(response).toBe("Book is not found")
+    done()
+  })
+
+  test("should return 201 if user is found", async (done: any) => {
+    const username = "BookTest"
+    const id = "ox9BiuVKM1cC"
+    await book.addBookToLib({ username, id })
+    const [code, response] = await book.deleteBook({ username, id })
+    expect(code).toBe(201)
+    expect(response).toBe('OK')
+    done()
+  })
+
+  test("should return 201 if user is found", async (done: any) => {
+    const username = "BookTest"
+    const id = "ox9BiuVKM1cC"
+    await book.addBookToLib({ username, id })
+    let deleted = await book.deleteBook({ username, id })
+    expect(deleted[0]).toBe(201) as any
+    const [code, response] = (await book.getUserLib({ username })) as any
+    expect(code).toBe(201)
+    expect(
+      response.every(({ id: bookId }: { id: string }) => bookId !== id)
     ).toBe(true)
     done()
   })
