@@ -1,7 +1,6 @@
 import axios from "axios"
 import Auth from "./auth"
 import Book from "./../models/book"
-import User from "./../models/user"
 
 const auth = new Auth()
 
@@ -13,6 +12,7 @@ export default class Books {
     const {
       data: { items }
     } = await axios.get(url)
+
     const books = items.map(this.mapBookData)
 
     return books
@@ -49,10 +49,10 @@ export default class Books {
   deleteBook = async ({ username, id }: { username: string; id: string }) => {
     const user = await auth.getUser(username)
     if (!!!user) return [404, "User does not exists"]
-    const book = await Book.findOne({id})
-    if (!!!book) return [404, 'Book is not found']
-    await Book.remove({id})
-    return [201, 'OK']
+    const book = await Book.findOne({ id })
+    if (!!!book) return [404, "Book is not found"]
+    await Book.remove({ id })
+    return [201, "OK"]
   }
 
   getUserLib = async ({ username }: { username: string }) => {
@@ -68,36 +68,61 @@ export default class Books {
     if (!!!user) return [404, "User does not exists"]
     const { _id: owner } = user
     const lib = await this.getLib({ owner })
-    const books = []
-    for await (const book of lib) {
-      const { id } = book
-      const { data, err, status } = await this.getBookDetails({ id })
-      if (data) {
-        const {
-          id,
-          volumeInfo: { title, authors, description, publishedDate, imageLinks }
-        } = data
-        books.push({
-          id,
-          title,
-          authors,
-          description,
-          publishedDate,
-          imageLinks
-        })
-      }
-    }
+    const books = await this.retreiveBooksDetails(lib)
 
     return [201, books]
   }
 
+  find = async () => {
+    const lib = (await Book.find({})) as any
+    const books = await this.retreiveBooksDetails(lib)
+    return [201, books]
+  }
+
   getBookDetails = async ({ id }: { id: string }) => {
-    const url = `https://www.googleapis.com/books/v1/volumes/${id}`
+    const url = `${this.googleBookApi}/${id}`
 
     const { data, err, status } = (await axios
       .get(url)
       .catch(err => ({ err }))) as any
     return { data, err, status }
+  }
+
+  getBook = async (data: any) => Book.findOne(data)
+
+  retreiveBooksDetails = async (
+    lib: { _id: string; id: string; owner: string; photos: any }[]
+  ) => {
+    const books = []
+    while (books.length < lib.length) {
+      for await (const book of lib) {
+        const { id, _id, owner } = book
+        const { data } = await this.getBookDetails({ id })
+        if (data) {
+          const {
+            id,
+            volumeInfo: {
+              title,
+              authors,
+              description,
+              publishedDate,
+              imageLinks
+            }
+          } = data
+          books.push({
+            _id,
+            owner,
+            id,
+            title,
+            authors,
+            description,
+            publishedDate,
+            imageLinks
+          })
+        }
+      }
+    }
+    return books
   }
 
   getLib = async ({ owner }: { owner: string }) => {
