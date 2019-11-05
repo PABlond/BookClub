@@ -6,24 +6,24 @@ import { BookItemsTitle, AddBookContainer } from "../Styled"
 export default ({
   books,
   setSelectI,
-  //   selectI,
   overI,
   setOverI,
+  title,
 }: {
   books: IBook[]
-  setSelectI: any
-  //   selectI: number
-  setOverI: any
+  setSelectI: (i: number) => void
+  setOverI: (i: number) => void
   overI: number
+  title: string
 }) => {
   const settings = {
     dots: false,
     variableWidth: false,
-    infinite: true,
     speed: 500,
     adaptiveHeight: true,
     slidesToShow: 6,
     slidesToScroll: 6,
+    infinite: books.length > 3,
     responsive: [
       {
         breakpoint: 1024,
@@ -48,10 +48,10 @@ export default ({
       },
     ],
   }
-  console.log(overI)
+
   return (
     <AddBookContainer style={{ maxHeight: "500px" }}>
-      <BookItemsTitle>Search Items To Add</BookItemsTitle>
+      <BookItemsTitle>{title}</BookItemsTitle>
       <Slider {...settings}>
         {books.map(
           ({ id, title, imageLinks }: IBook, i: number) =>
