@@ -117,7 +117,7 @@ const SignupPage = ({
                       }
                     />
                   </Form.Group>
-                  <Form.Group controlId="formBasicPassword">
+                  <Form.Group controlId="formBasicConfirm">
                     <AuthLabel>Password</AuthLabel>
                     <AuthInput
                       type="password"
@@ -165,7 +165,6 @@ const mapDispatchToProps = (dispatch: Dispatch<any>) => {
 }
 
 const mapStateToProps = (state: any) => {
-  console.log(state)
   const {
     auth: { error, username },
   } = state

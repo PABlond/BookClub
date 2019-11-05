@@ -47,7 +47,6 @@ const LoginPage = ({
   }, [error])
 
   useEffect(() => {
-    console.log(username)
     if (username.length) navigate("/dashboard")
   }, [username])
 
@@ -65,6 +64,7 @@ const LoginPage = ({
         }
       `}
       render={data => {
+        console.log(data)
         const imageData = [
           data.desktop.childImageSharp.fluid,
           `linear-gradient(rgba(0, 0, 0, 0.73), rgba(0, 0, 0, 0.73))`,
@@ -74,7 +74,6 @@ const LoginPage = ({
             Tag="section"
             fluid={imageData}
             backgroundColor={`#040e18`}
-            style={{ minHeight: "100vh" }}
           >
             <Header />
             <LoginContainer>
@@ -149,7 +148,6 @@ const mapDispatchToProps = (dispatch: Dispatch<any>) => {
 }
 
 const mapStateToProps = (state: any) => {
-  console.log(state)
   const {
     auth: { error, username },
   } = state
