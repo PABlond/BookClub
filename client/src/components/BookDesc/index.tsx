@@ -1,17 +1,17 @@
 import React from "react"
-// import { IBook } from "../../interfaces/books.interface"
+
 import { Popover } from "react-bootstrap"
+import { FaRegTimesCircle } from "react-icons/fa"
 
 import {
   AddBookTitle,
   AddBookRow,
-  AddLibButton,
   PopOverCloseButton,
   CenterCol,
 } from "../Styled"
 import { Col } from "react-bootstrap"
 
-export default ({ book, addBook, show, setShow }: any) => {
+export default ({ book, children, show, setShow }: any) => {
   const placement = "right-end"
   return (
     <Popover
@@ -19,7 +19,6 @@ export default ({ book, addBook, show, setShow }: any) => {
       className={!show ? "hide" : ""}
     >
       <Popover.Content>
-        {/* <AddBookDesc> */}
         <AddBookRow>
           <Col sm={8}>
             <AddBookTitle>{book.title}</AddBookTitle>
@@ -32,11 +31,9 @@ export default ({ book, addBook, show, setShow }: any) => {
         </AddBookRow>
         <AddBookRow>
           <CenterCol sm={4}>
-            <AddLibButton onClick={() => addBook(book.id)}>
-              + Library
-            </AddLibButton>
-
+            {children}
             <PopOverCloseButton onClick={() => setShow(false)}>
+              <FaRegTimesCircle size="19px" />{" "}
               Close
             </PopOverCloseButton>
           </CenterCol>
