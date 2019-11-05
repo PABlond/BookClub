@@ -4,6 +4,8 @@ import { connect } from "react-redux"
 import getUser from "../../actions/auth/user"
 import { getToken } from "../../actions/auth/helpers/index"
 
+import Loading from "../Loading"
+
 const LoggedLayout = ({
   dispatchUserInfo,
   children,
@@ -15,7 +17,7 @@ const LoggedLayout = ({
   username: string
   error: string
 }) => {
-  const [loading, setLoading] = useState<Boolean>(false)
+  const [loading, setLoading] = useState<Boolean>(true)
 
   useEffect(() => {
     if (!!getToken()) {
@@ -30,7 +32,7 @@ const LoggedLayout = ({
     if (error.length) navigate("/login")
   }, [error])
 
-  return loading ? <p>Loading ...</p> : <>{children}</>
+  return loading ? <Loading /> : <>{children}</>
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => {
