@@ -34,6 +34,15 @@ Router.route("/user/book")
     const [code, response] = await book.getUserLib({ username })
     return res.status(code).json(response)
   })
+  .delete(
+    passport.authenticate("jwt", { session: false }),
+    async (req, res) => {
+      const { username } = req.user as any
+      const { id } = req.body
+      const [code, response] = await book.deleteBook({ username, id })
+      return res.status(code as number).json(response)
+    }
+  )
 
 Router.route("/user/book/details").get(
   passport.authenticate("jwt", { session: false }),
