@@ -152,7 +152,7 @@ describe("Delete book in library", () => {
     await book.addBookToLib({ username, id })
     const [code, response] = await book.deleteBook({ username, id })
     expect(code).toBe(201)
-    expect(response).toBe('OK')
+    expect(response).toBe("OK")
     done()
   })
 
@@ -166,6 +166,32 @@ describe("Delete book in library", () => {
     expect(code).toBe(201)
     expect(
       response.every(({ id: bookId }: { id: string }) => bookId !== id)
+    ).toBe(true)
+    done()
+  })
+})
+
+describe("Get users'Books", () => {
+  test("should return code 201", async (done: any) => {
+    const [code, response] = await book.find()
+    expect(Array.isArray(response)).toBe(true)
+    expect(code).toBe(201)
+    done()
+  })
+
+  test("should return a list of users'book", async (done: any) => {
+    const [_, response] = await book.find()
+    expect(
+      response.every((book: any) => {
+        const bookArr = Object.keys(book)
+        return (
+          bookArr.indexOf("title") !== -1 &&
+          bookArr.indexOf("authors") !== -1 &&
+          bookArr.indexOf("description") !== -1 &&
+          bookArr.indexOf("publishedDate") !== -1 &&
+          bookArr.indexOf("imageLinks") !== -1
+        )
+      })
     ).toBe(true)
     done()
   })
